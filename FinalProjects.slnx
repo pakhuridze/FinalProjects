@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="ATMApp/ATMApp.csproj" Id="f73cea4e-b7c1-4537-8720-6ed448d2d5fb" />
+  <Project Path="ConsoleCalculator/ConsoleCalculator.csproj" />
+  <Project Path="FinalProjects/FinalProjects.csproj" />
+  <Project Path="GuessNumber/GuessNumber.csproj" />
+  <Project Path="HangMan/HangMan.csproj" Id="7fa09cd0-50e9-4fb1-80d0-9095cd4d0c31" />
+</Solution>

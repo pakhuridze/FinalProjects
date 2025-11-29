@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfPlayerStat xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <PlayerStat>
+    <Name>kl</Name>
+    <Score>3600</Score>
+    <Date>2025-11-22T11:20:27.1311901+04:00</Date>
+  </PlayerStat>
+  <PlayerStat>
+    <Name>kl</Name>
+    <Score>3600</Score>
+    <Date>2025-11-22T11:20:59.3411628+04:00</Date>
+  </PlayerStat>
+</ArrayOfPlayerStat>

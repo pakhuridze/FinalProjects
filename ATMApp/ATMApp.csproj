@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Business\Interfaces\" />
+    <Folder Include="Business\Helpers\" />
+    <Folder Include="Business\Validators\" />
+    <Folder Include="Business\Services\" />
+    <Folder Include="Data\Interfaces\" />
+    <Folder Include="Data\Repositories\" />
+    <Folder Include="Domain\Models\" />
+    <Folder Include="Data\DataFiles\" />
+    <Folder Include="Domain\Exceptions\" />
+    <Folder Include="UI\Menu\" />
+  </ItemGroup>
+
+</Project>
