@@ -1,0 +1,17 @@
+[
+  {
+    "UserId": 1,
+    "Message": "User d f checked balance. Current balance: 0 GEL",
+    "Date": "2025-11-30T12:01:36.9557095+04:00"
+  },
+  {
+    "UserId": 1,
+    "Message": "User d f deposited 200 GEL. New balance: 200",
+    "Date": "2025-11-30T12:01:41.0889382+04:00"
+  },
+  {
+    "UserId": 1,
+    "Message": "User d f checked balance. Current balance: 200 GEL",
+    "Date": "2025-11-30T12:01:44.3179165+04:00"
+  }
+]

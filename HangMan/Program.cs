@@ -54,30 +54,37 @@ namespace HangMan
             {
                 Console.WriteLine($"{stat.Name,-15} | {stat.Score,-10} | {stat.Date.ToShortDateString()}");
             }
+
             Console.WriteLine(new string('-', 50));
             Console.WriteLine("Press any key to go back...");
             Console.ReadKey();
         }
     }
 
-    // 
     internal class Program
     {
+        private static string _currentUser = "";
+        private static Dictionary<string, string> Users = new();
+        private const string UserFile = "users.csv";
+
         private static List<string> words = new List<string>
         {
             "apple", "banana", "orange", "grape", "kiwi",
             "strawberry", "pineapple", "blueberry", "peach", "watermelon"
         };
 
-        // ვიმახსოვრებთ  რომ იგივე სიტყვა არ გავიმეოროთ
         private static string lastPickedWord = "";
 
         static void Main(string[] args)
         {
+            LoadUsers();
+            HandleUserLogin();
+
             while (true)
             {
                 Console.Clear();
                 Console.WriteLine("--- HANGMAN GAME ---");
+                Console.WriteLine($"Logged in as: {_currentUser}");
                 Console.WriteLine("0. Play Game");
                 Console.WriteLine("1. Top 10 Stats");
                 Console.WriteLine("Other. Exit");
@@ -100,32 +107,101 @@ namespace HangMan
             }
         }
 
+        // ============= LOGIN / REGISTER BLOCK =============
+
+        private static void LoadUsers()
+        {
+            if (!File.Exists(UserFile))
+            {
+                File.WriteAllText(UserFile, "Username,Password\n");
+                return;
+            }
+
+            foreach (var line in File.ReadLines(UserFile).Skip(1))
+            {
+                var parts = line.Split(',');
+                if (parts.Length == 2)
+                {
+                    Users[parts[0]] = parts[1];
+                }
+            }
+        }
+
+        private static void HandleUserLogin()
+        {
+            while (true)
+            {
+                Console.Write("Enter your username: ");
+                string? username = Console.ReadLine();
+
+                if (string.IsNullOrWhiteSpace(username))
+                {
+                    Console.WriteLine("Username cannot be empty.\n");
+                    continue;
+                }
+
+                if (Users.ContainsKey(username))
+                {
+                    Console.Write("Enter your password: ");
+                    string? password = Console.ReadLine();
+
+                    if (password == Users[username])
+                    {
+                        Console.WriteLine("Login successful!");
+                        _currentUser = username;
+                        return;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Wrong password. Try again.\n");
+                        continue;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("User not found. Creating a new account...");
+                    Console.Write("Create a password: ");
+                    string? newPass = Console.ReadLine();
+
+                    if (string.IsNullOrWhiteSpace(newPass))
+                    {
+                        Console.WriteLine("Password cannot be empty.\n");
+                        continue;
+                    }
+
+                    Users[username] = newPass;
+                    File.AppendAllText(UserFile, $"{username},{newPass}\n");
+
+                    Console.WriteLine("Registration complete!");
+                    _currentUser = username;
+                    return;
+                }
+            }
+        }
+
+        // ============= GAMEPLAY BLOCK =============
+
         private static void GamePlay()
         {
             Console.Clear();
-            Console.Write("\nEnter your Player Name: ");
-            string playerName = Console.ReadLine();
-            if (string.IsNullOrWhiteSpace(playerName)) playerName = "Unknown";
+            string playerName = _currentUser; // automatically use logged in user
 
-            // განახლებული ლოგიკა სიტყვის არჩევისთვის 
             string targetWord;
 
-            // თუ ლისტში 1 სიტყვაა, ლუპში არ ჩავაგდოთ, თორემ გაიჭედება
             if (words.Count > 1)
             {
                 do
                 {
                     targetWord = words[Random.Shared.Next(words.Count)];
                 }
-                while (targetWord == lastPickedWord); // ვირჩევთ მანამ, სანამ ძველს არ დაემთხვევა
+                while (targetWord == lastPickedWord);
             }
             else
             {
                 targetWord = words[0];
             }
 
-            lastPickedWord = targetWord; // ვიმახსოვრებთ ახალს შემდეგი ხელისთვის
-            
+            lastPickedWord = targetWord;
 
             char[] guessedWord = new string('*', targetWord.Length).ToCharArray();
             List<char> usedLetters = new List<char>();
@@ -140,19 +216,18 @@ namespace HangMan
                 Console.WriteLine($"Word: {new string(guessedWord)}");
                 Console.WriteLine($"Used letters: {string.Join(", ", usedLetters)}");
 
-                Console.Write("\nGuess a letter OR type the full word to win: ");
+                Console.Write("\nGuess a letter OR type the full word: ");
                 string input = Console.ReadLine().ToLower();
 
                 if (string.IsNullOrWhiteSpace(input)) continue;
 
-                //ერთი ასოს შეყვანა
                 if (input.Length == 1)
                 {
                     char letter = input[0];
 
                     if (usedLetters.Contains(letter))
                     {
-                        Console.WriteLine("You already used this letter! Press key...");
+                        Console.WriteLine("Already used this letter! Press key...");
                         Console.ReadKey();
                         continue;
                     }
@@ -178,19 +253,18 @@ namespace HangMan
                         lives--;
                     }
                 }
-                // 2. მთლიანი სიტყვის შეყვანა
                 else
                 {
                     if (input == targetWord)
                     {
-                        isWinner = true;
                         guessedWord = targetWord.ToCharArray();
+                        isWinner = true;
                         break;
                     }
                     else
                     {
-                        Console.WriteLine($"Wrong word! The word was NOT '{input}'.");
-                        lives = 0; // ან lives -= 2; როგორც გინდა
+                        Console.WriteLine($"Wrong word!");
+                        lives = 0;
                     }
                 }
             }
@@ -210,7 +284,7 @@ namespace HangMan
                 Console.WriteLine($"The correct word was: {targetWord}");
             }
 
-            Console.WriteLine("\nPress any key to return to menu...");
+            Console.WriteLine("\nPress any key...");
             Console.ReadKey();
         }
     }

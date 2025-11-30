@@ -1,5 +1,5 @@
 <Solution>
-  <Project Path="ATMApp/ATMApp.csproj" Id="f73cea4e-b7c1-4537-8720-6ed448d2d5fb" />
+  <Project Path="ATMApp/ATM_Project.csproj" Id="f73cea4e-b7c1-4537-8720-6ed448d2d5fb" />
   <Project Path="ConsoleCalculator/ConsoleCalculator.csproj" />
   <Project Path="FinalProjects/FinalProjects.csproj" />
   <Project Path="GuessNumber/GuessNumber.csproj" />

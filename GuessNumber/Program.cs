@@ -9,42 +9,36 @@ namespace GuessNumber
     internal class Program
     {
         private static readonly Random _random = new();
-        private static string _currentUser = "Guest"; // მიმდინარე მომხმარებელი
+        private static string _currentUser = "Guest";
         private const string FilePath = "game_history.csv";
-       
+
         public enum DifficultyLevel
         {
-            Easy = 1,   // 1-15
-            Medium = 2, // 1-25
-            Hard = 3    // 1-50
+            Easy = 1,
+            Medium = 2,
+            Hard = 3
         }
 
         static void Main(string[] args)
         {
-            // ქართული უნიკოდის მხარდაჭერა კონსოლში
             Console.OutputEncoding = Encoding.UTF8;
 
-            Console.WriteLine(" გამარჯობა! კეთილი იყოს თქვენი მობრძანება თამაშში 'გამოიცანი რიცხვი'");
+            Console.WriteLine("Hello! Welcome to the game 'Guess the Number'");
 
-            // მომხმარებლის სახელის მოთხოვნა
-            Console.Write("შეიყვანეთ თქვენი სახელი: ");
-            string? inputName = Console.ReadLine();
-            if (!string.IsNullOrWhiteSpace(inputName))
-            {
-                _currentUser = inputName;
-            }
+            LoadUsers();        // Load users file
+            HandleUserLogin();  // Login/Register (DIRECT → no extra ENTER)
 
             while (true)
             {
                 Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine($"\n===== მთავარი მენიუ ({_currentUser}) =====");
+                Console.WriteLine($"\n===== Main Menu ({_currentUser}) =====");
                 Console.ResetColor();
 
-                Console.WriteLine("1) თამაშის დაწყება");
-                Console.WriteLine("2) TOP 10 რეიტინგი");
-                Console.WriteLine("3) გასვლა");
+                Console.WriteLine("1) Start Game");
+                Console.WriteLine("2) TOP 10 Ranking");
+                Console.WriteLine("3) Exit");
 
-                Console.Write("აირჩიეთ მოქმედება: ");
+                Console.Write("Choose an option: ");
                 string? input = Console.ReadLine();
 
                 switch (input)
@@ -56,20 +50,21 @@ namespace GuessNumber
                         ShowTop10();
                         break;
                     case "3":
-                        Console.WriteLine("ნახვამდის!");
+                        Console.WriteLine("Goodbye!");
                         return;
                     default:
-                        Console.WriteLine("❌ არასწორი არჩევანი! სცადეთ თავიდან.");
+                        Console.WriteLine("Invalid choice! Try again.");
                         break;
                 }
             }
         }
 
+
         private static void DisplayDifficultySelection()
         {
             while (true)
             {
-                Console.WriteLine("\nაირჩიეთ სირთულე: 1-Easy (მარტივი) | 2-Medium (საშუალო) | 3-Hard (რთული)");
+                Console.WriteLine("\nSelect difficulty: 1-Easy | 2-Medium | 3-Hard");
                 string? input = Console.ReadLine();
 
                 if (Enum.TryParse(input, out DifficultyLevel level) && Enum.IsDefined(typeof(DifficultyLevel), level))
@@ -79,7 +74,7 @@ namespace GuessNumber
                 }
                 else
                 {
-                    Console.WriteLine("❌ არასწორი სირთულე. სცადეთ თავიდან.");
+                    Console.WriteLine("Invalid difficulty. Try again.");
                 }
             }
         }
@@ -88,9 +83,9 @@ namespace GuessNumber
         {
             return level switch
             {
-                DifficultyLevel.Easy => _random.Next(1, 16),   // 1-15
-                DifficultyLevel.Medium => _random.Next(1, 26), // 1-25
-                DifficultyLevel.Hard => _random.Next(1, 51),   // 1-50
+                DifficultyLevel.Easy => _random.Next(1, 16),
+                DifficultyLevel.Medium => _random.Next(1, 26),
+                DifficultyLevel.Hard => _random.Next(1, 51),
                 _ => 1
             };
         }
@@ -102,16 +97,16 @@ namespace GuessNumber
             int attemptsUsed = 0;
             bool isWin = false;
 
-            Console.WriteLine($"\n🎮 დაიწყო! გამოიცანი რიცხვი. სირთულე: {level}");
-            Console.WriteLine($"გაქვს {maxAttempts} მცდელობა.");
+            Console.WriteLine($"\nGame started! Guess the number. Difficulty: {level}");
+            Console.WriteLine($"You have {maxAttempts} attempts.");
 
             while (attemptsUsed < maxAttempts)
             {
-                Console.Write($"\nმცდელობა {attemptsUsed + 1}/{maxAttempts}. შეიყვანეთ რიცხვი: ");
+                Console.Write($"\nAttempt {attemptsUsed + 1}/{maxAttempts}. Enter a number: ");
 
                 if (!int.TryParse(Console.ReadLine(), out int guess))
                 {
-                    Console.WriteLine("❌ გთხოვთ, შეიყვანოთ მხოლოდ ციფრები!");
+                    Console.WriteLine("Please enter only numeric values!");
                     continue;
                 }
 
@@ -120,27 +115,26 @@ namespace GuessNumber
                 if (guess == randomNumber)
                 {
                     isWin = true;
-                    break; // მოგება
+                    break;
                 }
 
                 if (guess < randomNumber)
                 {
-                    Console.WriteLine("🔼 ჩაფიქრებული რიცხვი მეტია.");
+                    Console.WriteLine("The number is higher.");
                 }
                 else
                 {
-                    Console.WriteLine("🔽 ჩაფიქრებული რიცხვი ნაკლებია.");
+                    Console.WriteLine("The number is lower.");
                 }
             }
 
             if (isWin)
             {
-                // ქულების დათვლა: რაც უფრო მალე გამოიცნობს და რაც უფრო რთულია დონე, მეტი ქულაა
                 int score = CalculateScore(maxAttempts, attemptsUsed, level);
 
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"\n🎉 გილოცავთ! თქვენ გამოიცანით რიცხვი {attemptsUsed} მცდელობაში!");
-                Console.WriteLine($"თქვენი ქულა: {score}");
+                Console.WriteLine($"\nCongratulations! You guessed the number in {attemptsUsed} attempts!");
+                Console.WriteLine($"Your score: {score}");
                 Console.ResetColor();
 
                 SaveToCsv(_currentUser, score, level);
@@ -148,27 +142,22 @@ namespace GuessNumber
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"\n❌ სამწუხაროდ მცდელობები ამოიწურა! სწორი რიცხვი იყო: {randomNumber}");
+                Console.WriteLine($"\nAttempts exhausted! The correct number was: {randomNumber}");
                 Console.ResetColor();
             }
         }
 
-        // ქულების გამოთვლა
         private static int CalculateScore(int maxAttempts, int usedAttempts, DifficultyLevel level)
         {
-            // მაგალითად: (10 - გამოყენებული + 1) * სირთულის კოეფიციენტი
-            // Easy = x1, Medium = x2, Hard = x3
             int baseScore = (maxAttempts - usedAttempts) + 1;
             int multiplier = (int)level;
             return baseScore * multiplier * 10;
         }
 
-        // CSV-ში შენახვა
         private static void SaveToCsv(string username, int score, DifficultyLevel level)
         {
             try
             {
-                // თუ ფაილი არ არსებობს, ვქმნით ჰედერს
                 if (!File.Exists(FilePath))
                 {
                     File.WriteAllText(FilePath, "Username,Score,Difficulty,Date\n");
@@ -176,26 +165,25 @@ namespace GuessNumber
 
                 string record = $"{username},{score},{level},{DateTime.Now:yyyy-MM-dd HH:mm}\n";
                 File.AppendAllText(FilePath, record);
-                Console.WriteLine("✅ შედეგი შენახულია ისტორიაში.");
+                Console.WriteLine("Result saved to history.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"შეცდომა ფაილში ჩაწერისას: {ex.Message}");
+                Console.WriteLine($"Error while writing to file: {ex.Message}");
             }
         }
 
-        // TOP 10-ის გამოტანა
         private static void ShowTop10()
         {
             if (!File.Exists(FilePath))
             {
-                Console.WriteLine("\n ისტორია ცარიელია.");
+                Console.WriteLine("History is empty.");
                 return;
             }
 
             try
             {
-                var lines = File.ReadAllLines(FilePath).Skip(1); // პირველი ხაზი (სათაური) გამოტოვება
+                var lines = File.ReadAllLines(FilePath).Skip(1);
 
                 var records = new List<PlayerRecord>();
 
@@ -214,11 +202,10 @@ namespace GuessNumber
                     }
                 }
 
-                // სორტირება ქულების მიხედვით (კლებადობით) და ტოპ 10-ის აღება
                 var top10 = records.OrderByDescending(r => r.Score).Take(10).ToList();
 
-                Console.WriteLine("\n🏆 ===== TOP 10 მოთამაშე =====");
-                Console.WriteLine("{0,-15} | {1,-5} | {2,-10} | {3,-20}", "სახელი", "ქულა", "სირთულე", "თარიღი");
+                Console.WriteLine("\nTOP 10 Players");
+                Console.WriteLine("{0,-15} | {1,-5} | {2,-10} | {3,-20}", "Name", "Score", "Difficulty", "Date");
                 Console.WriteLine(new string('-', 60));
 
                 foreach (var rec in top10)
@@ -229,11 +216,10 @@ namespace GuessNumber
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"შეცდომა ისტორიის წაკითხვისას: {ex.Message}");
+                Console.WriteLine($"Error reading history: {ex.Message}");
             }
         }
 
-        // დამხმარე კლასი ჩანაწერებისთვის
         class PlayerRecord
         {
             public string Username { get; set; } = "";
@@ -241,5 +227,82 @@ namespace GuessNumber
             public string Difficulty { get; set; } = "";
             public string Date { get; set; } = "";
         }
+        private static Dictionary<string, string> Users = new();
+        private const string UserFile = "users.csv";
+
+        private static void LoadUsers()
+        {
+            if (!File.Exists(UserFile))
+            {
+                File.WriteAllText(UserFile, "Username,Password\n");
+                return;
+            }
+
+            foreach (var line in File.ReadLines(UserFile).Skip(1))
+            {
+                var parts = line.Split(',');
+                if (parts.Length == 2)
+                {
+                    Users[parts[0]] = parts[1];
+                }
+            }
+        }
+
+        private static void HandleUserLogin()
+        {
+            while (true)
+            {
+                Console.Write("Enter your username: ");
+                string? inputName = Console.ReadLine();
+
+                if (string.IsNullOrWhiteSpace(inputName))
+                {
+                    Console.WriteLine("Username cannot be empty.");
+                    continue;
+                }
+
+                // User exists → LOGIN
+                if (Users.ContainsKey(inputName))
+                {
+                    Console.Write("Enter your password: ");
+                    string? pass = Console.ReadLine();
+
+                    if (pass == Users[inputName])
+                    {
+                        Console.WriteLine("Login successful.");
+                        _currentUser = inputName;
+                        Console.Clear();
+                        return;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Wrong password. Try again.");
+                        continue;
+                    }
+                }
+                else
+                {
+                    // REGISTER NEW USER
+                    Console.WriteLine("Username not found. Creating new user...");
+                    Console.Write("Create a password: ");
+                    string? newPass = Console.ReadLine();
+
+                    if (string.IsNullOrWhiteSpace(newPass))
+                    {
+                        Console.WriteLine("Password cannot be empty.");
+                        continue;
+                    }
+
+                    // Save new user
+                    Users[inputName] = newPass;
+                    File.AppendAllText(UserFile, $"{inputName},{newPass}\n");
+
+                    Console.WriteLine("Registration complete.");
+                    _currentUser = inputName;
+                    return;
+                }
+            }
+        }
+
     }
 }
