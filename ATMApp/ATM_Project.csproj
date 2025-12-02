@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="DataStorage\logs.json" />
+    <Folder Include="DataStorage\" />
   </ItemGroup>
 
 </Project>

@@ -107,8 +107,6 @@ namespace HangMan
             }
         }
 
-        // ============= LOGIN / REGISTER BLOCK =============
-
         private static void LoadUsers()
         {
             if (!File.Exists(UserFile))
@@ -179,12 +177,11 @@ namespace HangMan
             }
         }
 
-        // ============= GAMEPLAY BLOCK =============
 
         private static void GamePlay()
         {
             Console.Clear();
-            string playerName = _currentUser; // automatically use logged in user
+            string playerName = _currentUser; 
 
             string targetWord;
 
@@ -284,7 +281,7 @@ namespace HangMan
                 Console.WriteLine($"The correct word was: {targetWord}");
             }
 
-            Console.WriteLine("\nPress any key...");
+            Console.WriteLine("\nPress any key to return to the main menu...");
             Console.ReadKey();
         }
     }
